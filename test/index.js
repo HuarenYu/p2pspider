@@ -15,7 +15,16 @@ p2p.ignore(function (infohash, rinfo, callback) {
 });
 
 p2p.on('metadata', function (metadata) {
-    console.log(metadata);
+    console.log('===========================================');
+    console.log(metadata.magnet);
+    console.log(metadata.info.name.toString());
+    if (metadata.info.files) {
+        metadata.info.files.forEach(function(file) {
+            file.path.forEach(function(path) {
+                console.log(path.toString());
+            });
+        });
+    }
 });
 
 p2p.listen(6881, '0.0.0.0');
