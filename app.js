@@ -79,7 +79,7 @@ p2p.on('metadata', function (metadata) {
         }
     })
     .then(function(res) {
-        console.log('add infohash:%s', res);
+        console.log('add infohash:%s', metadata.infohash);
     })
     .catch(function(err) {
         console.log(err);
