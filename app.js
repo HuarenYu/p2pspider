@@ -3,7 +3,6 @@
 var elasticsearch = require('elasticsearch');
 var moment = require('moment');
 var P2PSpider = require('./lib');
-var models = require('./models');
 
 var es = new elasticsearch.Client({
     host: 'localhost:9200',
