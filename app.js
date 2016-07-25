@@ -86,6 +86,7 @@ p2p.on('metadata', function (metadata) {
     })
     .catch(function(err) {
         console.log(err);
+        process.exit(1);
     });
     
 });
