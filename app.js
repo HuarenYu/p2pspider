@@ -25,7 +25,7 @@ p2p.ignore(function (infohash, rinfo, callback) {
         type: type,
         id: infohash
     })
-    .then(function(res) {
+/*    .then(function(res) {
         return es.update({
             index: index,
             type: type,
@@ -37,7 +37,7 @@ p2p.ignore(function (infohash, rinfo, callback) {
                 }
             }
         });
-    })
+    })*/
     .then(function(res) {
         //console.log('infohash exist:%s', infohash);
         callback(true);
@@ -83,7 +83,7 @@ p2p.on('metadata', function (metadata) {
         }
     })
     .then(function(res) {
-        console.log('add infohash:%s', metadata.infohash);
+        //console.log('add infohash:%s', metadata.infohash);
     })
     .catch(function(err) {
         console.log(err);
