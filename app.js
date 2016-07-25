@@ -15,17 +15,20 @@ var p2p = P2PSpider({
     timeout: 5000
 });
 
+var index = 'bt';
+var type = 'seed';
+
 p2p.ignore(function (infohash, rinfo, callback) {
     
     es.get({
-        index: 'dht',
-        type: 'torrent',
+        index: index,
+        type: type,
         id: infohash
     })
     .then(function(res) {
         return es.update({
-            index: 'dht',
-            type: 'torrent',
+            index: index,
+            type: type,
             id: infohash,
             body: {
                 script: 'ctx._source.peer_counter += peer',
@@ -67,15 +70,15 @@ p2p.on('metadata', function (metadata) {
     }
 
     es.create({
-        index: 'dht',
-        type: 'torrent',
+        index: index,
+        type: type,
         id: metadata.infohash,
         body: {
             name: metadata.info.name.toString(),
             files: JSON.stringify(files),
             length: totalLength,
             peer_counter: 1,
-            created_at: moment().format('YYYY-MM-DD HH:mm:ss')
+            created_at: (new Date())
         }
     })
     .then(function(res) {
