@@ -47,6 +47,7 @@ p2p.ignore(function (infohash, rinfo, callback) {
             callback(false);
         } else {
             console.err(err);
+            process.exit(1);
         }
     });
 
