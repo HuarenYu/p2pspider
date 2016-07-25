@@ -14,11 +14,14 @@ var es = new elasticsearch.Client({
     log: 'error'
 });
 
+var index = 'bt';
+var type = 'seed';
+
 app.get('/', function (req, res) {
 
     var q = {
-        index: 'dht',
-        type: 'torrent',
+        index: index,
+        type: type,
         size: 1000
     };
 
