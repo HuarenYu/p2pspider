@@ -56,7 +56,7 @@ p2p.on('metadata', function (metadata) {
         peer_counter: 1
     })
     .then(function(magnet) {
-        console.log('fetched a magnet:%s', metadata.info.name.toString());
+        //console.log('fetched a magnet:%s', metadata.info.name.toString());
     })
     .catch(function(err) {
         console.log(err);
