@@ -1,13 +1,7 @@
 'use strict';
 
-var elasticsearch = require('elasticsearch');
-var moment = require('moment');
 var P2PSpider = require('./lib');
-
-var es = new elasticsearch.Client({
-    host: 'localhost:9200',
-    log: 'info'
-});
+var models = require('./models');
 
 var p2p = P2PSpider({
     nodesMaxSize: 200,   // be careful
@@ -15,48 +9,33 @@ var p2p = P2PSpider({
     timeout: 5000
 });
 
-var index = 'bt';
-var type = 'seed';
-
 p2p.ignore(function (infohash, rinfo, callback) {
-    
-    es.get({
-        index: index,
-        type: type,
-        id: infohash
-    })
-/*    .then(function(res) {
-        return es.update({
-            index: index,
-            type: type,
-            id: infohash,
-            body: {
-                script: 'ctx._source.peer_counter += peer',
-                params: {
-                    peer: 1
-                }
-            }
-        });
-    })*/
-    .then(function(res) {
-        //console.log('infohash exist:%s', infohash);
-        callback(true);
-    })
-    .catch(function(err, res) {
-        if (err.status && err.status == 404) {
-            callback(false);
-        } else {
-            console.err(err);
-            process.exit(1);
+    // false => always to download the metadata even though the metadata is exists.
+    models.Magnet.findOne({
+        attributes: ['infohash'],
+        where: {
+            infohash: infohash
         }
+    })
+    .then(function(magnet) {
+        if (magnet) {
+            callback(true);
+            return magnet.increment('peer_counter', {by: 1});
+        } else {
+            callback(false);
+            return null;
+        }
+    })
+    .then(function(magnet) {
+        if (magnet)
+            console.log('magnet exists:%s', magnet.infohash);
+    })
+    .catch(function(error) {
+        console.log(error);
     });
-
 });
 
 p2p.on('metadata', function (metadata) {
-    //console.log('=======================================');
-    //console.log('hash:%s', metadata.infohash);
-    //console.log('name:%s', metadata.info.name.toString());
     var files = [];
     var totalLength = 0;
     if (metadata.info.files) {
@@ -69,27 +48,21 @@ p2p.on('metadata', function (metadata) {
         totalLength = metadata.info.length;
         files.push({length: metadata.info.length, path: metadata.info.name.toString()});
     }
-
-    es.create({
-        index: index,
-        type: type,
-        id: metadata.infohash,
-        body: {
-            name: metadata.info.name.toString(),
-            files: JSON.stringify(files),
-            length: totalLength,
-            peer_counter: 1,
-            created_at: (new Date())
-        }
+    models.Magnet.create({
+        infohash: metadata.infohash,
+        name: metadata.info.name.toString(),
+        files: JSON.stringify(files),
+        length: totalLength,
+        peer_counter: 1
     })
-    .then(function(res) {
-        //console.log('add infohash:%s', metadata.infohash);
+    .then(function(magnet) {
+        console.log('fetched a magnet:%s', metadata.info.name.toString());
     })
     .catch(function(err) {
-        console.log(err);
-        process.exit(1);
+        console.err(err);
     });
-    
 });
 
-p2p.listen(6881, '0.0.0.0');
+models.sequelize.sync().then(function () {
+    p2p.listen(6881, '0.0.0.0');
+});

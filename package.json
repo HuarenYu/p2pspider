@@ -17,7 +17,8 @@
     "ejs": "^2.4.2",
     "elasticsearch": "^11.0.1",
     "express": "^4.14.0",
-    "moment": "^2.14.1"
+    "mysql": "^2.11.1",
+    "sequelize": "^3.23.6"
   },
   "keywords": [
     "torrent",
