@@ -59,7 +59,7 @@ p2p.on('metadata', function (metadata) {
         console.log('fetched a magnet:%s', metadata.info.name.toString());
     })
     .catch(function(err) {
-        console.err(err);
+        console.log(err);
     });
 });
 
