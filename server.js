@@ -35,7 +35,7 @@ app.get('/query', function (req, res) {
     Magnet.findAndCountAll({
         where: {
             name: {
-                $like: q + '%'
+                $like: '%' + q + '%'
             }
         },
         limit: pageSize,
