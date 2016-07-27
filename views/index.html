@@ -10,8 +10,8 @@
     </style>
 </head>
 <body>
-    <h1>Search result(<%= querySet[0] %>)</h1>
-    <% querySet[1].forEach(function(torrent) { %>
+    <h1>Search result(共<%= querySet.count %>条记录，共<%= Math.ceil(querySet.count/pageSize) %>页)</h1>
+    <% querySet.rows.forEach(function(torrent) { %>
         <p><strong>hash:</strong>magnet:?xt=urn:btih:<%= torrent.infohash %></p>
         <p><strong>name:</strong><%- torrent.name %></p>
         <p><strong>peer_counter:</strong><%= torrent.peer_counter%></p>

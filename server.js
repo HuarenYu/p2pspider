@@ -12,12 +12,37 @@ var models = require('./models');
 var Magnet = models.Magnet;
 
 app.get('/', function (req, res) {
-    Promise.all([
-        Magnet.count(),
-        Magnet.findAll({limit: 100})
-    ])
+    var pageSize = req.query.pageSize || 50;
+    var page = req.query.page || 1;
+
+    Magnet.findAndCountAll({
+        limit: pageSize,
+        offset: (page - 1) * pageSize
+    })
     .then(function(querySet) {
-        res.render('index', {querySet: querySet});
+        res.render('index', {querySet: querySet, page: page, pageSize: pageSize});
+    })
+    .catch(function(err) {
+        res.render('error', {error: err});
+    });
+});
+
+app.get('/query', function (req, res) {
+    var pageSize = req.query.pageSize || 50;
+    var page = req.query.page || 1;
+    var q = req.query.q;
+
+    Magnet.findAndCountAll({
+        where: {
+            name: {
+                $like: q + '%'
+            }
+        },
+        limit: pageSize,
+        offset: (page - 1) * pageSize
+    })
+    .then(function(querySet) {
+        res.render('index', {querySet: querySet, page: page, pageSize: pageSize});
     })
     .catch(function(err) {
         res.render('error', {error: err});
