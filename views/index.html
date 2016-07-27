@@ -10,11 +10,11 @@
     </style>
 </head>
 <body>
-    <h1>Search result(<%= querySet.hits.total %>)</h1>
-    <% querySet.hits.hits.forEach(function(torrent) { %>
-        <p><strong>hash:</strong>magnet:?xt=urn:btih:<%= torrent._id %></p>
-        <p><strong>name:</strong><%- torrent.highlight ? torrent.highlight.name : torrent._source.name %></p>
-        <p><strong>peer_counter:</strong><%= torrent._source.peer_counter%></p>
+    <h1>Search result(<%= querySet[0] %>)</h1>
+    <% querySet[1].forEach(function(torrent) { %>
+        <p><strong>hash:</strong>magnet:?xt=urn:btih:<%= torrent.infohash %></p>
+        <p><strong>name:</strong><%- torrent.name %></p>
+        <p><strong>peer_counter:</strong><%= torrent.peer_counter%></p>
         <hr>
     <% }); %>
 </body>

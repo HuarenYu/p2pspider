@@ -8,49 +8,20 @@ app.set('view engine', 'html');
 app.engine('html', ejs.renderFile);
 app.use('static', express.static(__dirname + '/public'));
 
-var elasticsearch = require('elasticsearch');
-var es = new elasticsearch.Client({
-    host: 'localhost:9200',
-    log: 'error'
-});
-
-var index = 'bt';
-var type = 'seed';
+var models = require('./models');
+var Magnet = models.Magnet;
 
 app.get('/', function (req, res) {
-
-    var q = {
-        index: index,
-        type: type,
-        size: 1000
-    };
-
-    if (req.query.q) {
-        q.body = {
-            query: {
-                match: {
-                    name: req.query.q
-                }
-            },
-            highlight: {
-                pre_tags: ['<span>', '<span>'],
-                post_tags: ['</span>', '</span>'],
-                fields: {
-                    name: {}
-                }
-            }
-        }
-    }
-
-    es.search(q)
+    Promise.all([
+        Magnet.count(),
+        Magnet.findAll({limit: 100})
+    ])
     .then(function(querySet) {
         res.render('index', {querySet: querySet});
     })
     .catch(function(err) {
-        console.log(err);
-        res.render('error', {});
+        res.render('error', {error: err});
     });
-    
 });
 
 app.listen(3000, function(err) {
