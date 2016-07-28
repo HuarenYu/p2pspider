@@ -12,7 +12,7 @@ var p2p = P2PSpider({
 p2p.ignore(function (infohash, rinfo, callback) {
     // false => always to download the metadata even though the metadata is exists.
     models.Magnet.findOne({
-        attributes: ['infohash'],
+        attributes: ['id', 'infohash'],
         where: {
             infohash: infohash
         }
@@ -27,8 +27,8 @@ p2p.ignore(function (infohash, rinfo, callback) {
         }
     })
     .then(function(magnet) {
-        if (magnet)
-            console.log('magnet exists:%s', magnet.infohash);
+        /*if (magnet)
+            console.log('magnet exists:%s', magnet.infohash);*/
     })
     .catch(function(error) {
         console.log(error);
