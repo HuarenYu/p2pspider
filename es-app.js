@@ -25,7 +25,7 @@ p2p.ignore(function (infohash, rinfo, callback) {
         type: type,
         id: infohash
     })
-/*    .then(function(res) {
+    .then(function(res) {
         return es.update({
             index: index,
             type: type,
@@ -37,17 +37,16 @@ p2p.ignore(function (infohash, rinfo, callback) {
                 }
             }
         });
-    })*/
+    })
     .then(function(res) {
-        //console.log('infohash exist:%s', infohash);
+        console.log('infohash exist:%s', infohash);
         callback(true);
     })
     .catch(function(err, res) {
         if (err.status && err.status == 404) {
             callback(false);
         } else {
-            console.err(err);
-            process.exit(1);
+            console.error(err);
         }
     });
 
@@ -83,11 +82,10 @@ p2p.on('metadata', function (metadata) {
         }
     })
     .then(function(res) {
-        //console.log('add infohash:%s', metadata.infohash);
+        console.log('add infohash:%s', metadata.infohash);
     })
     .catch(function(err) {
         console.log(err);
-        process.exit(1);
     });
     
 });
